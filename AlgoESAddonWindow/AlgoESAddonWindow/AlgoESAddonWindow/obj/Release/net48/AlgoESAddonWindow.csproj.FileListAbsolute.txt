@@ -1,0 +1,5 @@
+D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.AssemblyReference.cache
+D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.GeneratedMSBuildEditorConfig.editorconfig
+D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.AssemblyInfoInputs.cache
+D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.AssemblyInfo.cs
+D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.CoreCompileInputs.cache

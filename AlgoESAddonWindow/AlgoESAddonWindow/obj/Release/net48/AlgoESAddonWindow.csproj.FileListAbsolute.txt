@@ -3,11 +3,6 @@ D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddo
 D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.AssemblyInfoInputs.cache
 D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.AssemblyInfo.cs
 D:\khi\khi\trading bot\New folder\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.CoreCompileInputs.cache
-D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.AssemblyReference.cache
-D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.GeneratedMSBuildEditorConfig.editorconfig
-D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.AssemblyInfoInputs.cache
-D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.AssemblyInfo.cs
-D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.CoreCompileInputs.cache
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\bin\Release\net48\AlgoESAddonWindow.dll
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\bin\Release\net48\AlgoESAddonWindow.pdb
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\bin\Release\net48\NinjaTrader.Core.dll
@@ -102,8 +97,13 @@ D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\bin\Release\net48\z
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\bin\Release\net48\ru\PresentationCore.resources.dll
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\bin\Release\net48\ru\PresentationFramework.resources.dll
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\bin\Release\net48\ru\WindowsBase.resources.dll
+D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.AssemblyReference.cache
+D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.Form1.resources
+D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.GenerateResource.cache
+D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.GeneratedMSBuildEditorConfig.editorconfig
+D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.AssemblyInfoInputs.cache
+D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.AssemblyInfo.cs
+D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.CoreCompileInputs.cache
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAd.EF59630B.Up2Date
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.dll
 D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.pdb
-D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.Form1.resources
-D:\khi\AlgoESAddonWindow\AlgoESAddonWindow\AlgoESAddonWindow\obj\Release\net48\AlgoESAddonWindow.csproj.GenerateResource.cache

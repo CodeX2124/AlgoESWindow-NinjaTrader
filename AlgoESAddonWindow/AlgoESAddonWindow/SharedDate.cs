@@ -28,5 +28,5 @@ namespace AlgoESAddonWindow.SharedData
         public static double[] limitPrices { get; set; } = new double[100];
         public static string[] states { get; set; } = new string[100];
         public static int cnt { get; set; } = 0;
-    }
+    }   
 }

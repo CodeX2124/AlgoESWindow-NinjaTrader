@@ -28,9 +28,10 @@ namespace AlgoESAddonWindow.OrderStrategy
         private double limitPriceESU, limitPriceESZ, currentPriceESU, currentPriceESZ;
         private int contractCountESU = 0, contractCountESZ = 0, cnt = 0, cntESU = 0, cntESZ = 0, cntFilled = 0;
         public string? typeESU = "", typeESZ = "", currentOrderId;
-        private formAlgoES? algoForm;
+        private formAlgoES algoForm;
         private Instrument? instrumentESU, instrumentESZ;
         private string _strOrderFilledInfo = "", orderState = "None";
+
         private void OnMarketData(object sender, MarketDataEventArgs e)
         {
 
@@ -43,7 +44,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                     {
                         if (Math.Abs(currentPriceESU - SharedDataState.limitPrices[i]) >= 2)
                         {
-                            Account acc = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+                            Account acc = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
                             CancelOrder(acc, SharedDataState.orderIDs[i]);
                             // Print($"{i} ====> {currentOrders[i].OrderId} cancelled due to high/low spread");
                         }
@@ -61,7 +62,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                     {
                         if (Math.Abs(currentPriceESZ - SharedDataState.limitPrices[i]) >= 2)
                         {
-                            Account acc = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+                            Account acc = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
                             CancelOrder(acc, SharedDataState.orderIDs[i]);
                             // Print($"{i} ====> {currentOrders[i].OrderId} cancelled due to high/low spread");
                         }
@@ -93,57 +94,71 @@ namespace AlgoESAddonWindow.OrderStrategy
             return orderState;
         }
 
+        //public void OnPositionUpdate(object sender, OrderEventArgs e)
+        //{
+        //    Print($"{SharedValue.CutLossActive}");
+        //    Print($"{SharedValue.CurrentValue}");
+        //    Print($"{SharedValue.CutLossValue}");
+        //    // If cut loss is active, check condition
+        //    if (SharedValue.CutLossActive && SharedValue.CurrentValue <= SharedValue.CutLossValue)
+        //    {
+        //        Print($"Cut loss triggered! Account value ${SharedValue.CurrentValue} <= ${SharedValue.CutLossValue}");
+        //        CloseAllOrder();
+        //        // Disable cut loss after triggering
+        //        SharedValue.CutLossActive = false;
+        //    }
+        //}
         public void OnOrderUpdate(object sender, OrderEventArgs e)
         {
-            if (e.OrderState == OrderState.Filled)
-            {
-                _strOrderFilledInfo = $"Order : {e.OrderId}" + "filled at price" + $"{e.AverageFillPrice} successfully";
-                GetOrderFilledInfo();
-                Print($"Order : {e.OrderId} filled at price {e.AverageFillPrice} successfully");
-                for (int i = 0; i < SharedDataState.cnt; i++)
-                {
-                    if (e.OrderId == SharedDataState.orderIDs[i])
-                        SharedDataState.states[i] = "Filled";
-                }
-            }
+            //if (e.OrderState == OrderState.Filled)
+            //{
+            //    _strOrderFilledInfo = $"Order : {e.OrderId}" + "filled at price" + $"{e.AverageFillPrice} successfully";
+            //    GetOrderFilledInfo();
+            //    //Print($"Order : {e.OrderId} filled at price {e.AverageFillPrice} successfully");
+            //    for (int i = 0; i < SharedDataState.cnt; i++)
+            //    {
+            //        if (e.OrderId == SharedDataState.orderIDs[i])
+            //            SharedDataState.states[i] = "Filled";
+            //    }
+            //}
 
-            if (e.OrderState == OrderState.Cancelled)
-            {
-                Print($"Order {e.OrderId} cancelled.");
-                for (int i = 0; i < SharedDataState.cnt; i++) 
-                {
-                    if (e.OrderId == SharedDataState.orderIDs[i])
-                        SharedDataState.states[i] = "Cancelled";
-                }
-            }
+            //if (e.OrderState == OrderState.Cancelled)
+            //{
+            //    Print($"Order {e.OrderId} cancelled.");
+            //    for (int i = 0; i < SharedDataState.cnt; i++) 
+            //    {
+            //        if (e.OrderId == SharedDataState.orderIDs[i])
+            //            SharedDataState.states[i] = "Cancelled";
+            //    }
+            //}
 
-            if (e.OrderState == OrderState.Working)
-            {
-                if (SharedDataState.cnt == 0)
-                {
-                    SharedDataState.orderIDs[SharedDataState.cnt] = e.OrderId;
-                    SharedDataState.limitPrices[SharedDataState.cnt] = e.LimitPrice;
-                    SharedDataState.states[SharedDataState.cnt] = "Working";
-                    SharedDataState.cnt++;
-                }
-                else if (SharedDataState.orderIDs[SharedDataState.cnt -1] != e.OrderId)
-                {
-                    SharedDataState.orderIDs[SharedDataState.cnt] = e.OrderId;
-                    SharedDataState.limitPrices[SharedDataState.cnt] = e.LimitPrice;
-                    SharedDataState.states[SharedDataState.cnt] = "Working";
-                    SharedDataState.cnt++;
-                }
-                
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    instrumentESU = Instrument.GetInstrument("ES SEP24");
-                    instrumentESZ = Instrument.GetInstrument("ES DEC24");
-                    instrumentESU.MarketDataUpdate += OnMarketData;
-                    instrumentESZ.MarketDataUpdate += OnMarketData;
-                });
+            //if (e.OrderState == OrderState.Working)
+            //{
+            //    if (SharedDataState.cnt == 0)
+            //    {
+            //        SharedDataState.orderIDs[SharedDataState.cnt] = e.OrderId;
+            //        SharedDataState.limitPrices[SharedDataState.cnt] = e.LimitPrice;
+            //        SharedDataState.states[SharedDataState.cnt] = "Working";
+            //        SharedDataState.cnt++;
+            //    }
+            //    else if (SharedDataState.orderIDs[SharedDataState.cnt -1] != e.OrderId)
+            //    {
+            //        SharedDataState.orderIDs[SharedDataState.cnt] = e.OrderId;
+            //        SharedDataState.limitPrices[SharedDataState.cnt] = e.LimitPrice;
+            //        SharedDataState.states[SharedDataState.cnt] = "Working";
+            //        SharedDataState.cnt++;
+            //    }
+
+            //    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        instrumentESU = Instrument.GetInstrument("ES SEP24");
+            //        instrumentESZ = Instrument.GetInstrument("ES DEC24");
+            //        instrumentESU.MarketDataUpdate += OnMarketData;
+            //        instrumentESZ.MarketDataUpdate += OnMarketData;
+            //    });
 
 
-            }
+            //}
         }
 
         // Define the SendOrder function
@@ -175,7 +190,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 try
                 {
                     // Gather required parameters for SendOrder function
-                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091"); // Get the first available account (modify as per your requirement)
+                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133"); // Get the first available account (modify as per your requirement)
 
                     if (account == null)
                     {
@@ -220,7 +235,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 try
                 {
                     // Gather required parameters for SendOrder function
-                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091"); // Get the first available account (modify as per your requirement)
+                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133"); // Get the first available account (modify as per your requirement)
 
                     if (account == null)
                     {
@@ -274,7 +289,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 try
                 {
                     // Gather required parameters for SendOrder function
-                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091"); // Get the first available account (modify as per your requirement)
+                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133"); // Get the first available account (modify as per your requirement)
 
                     if (account == null)
                     {
@@ -314,7 +329,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 try
                 {
                     // Gather required parameters for SendOrder function
-                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091"); // Get the first available account (modify as per your requirement)
+                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133"); // Get the first available account (modify as per your requirement)
 
                     if (account == null)
                     {
@@ -357,7 +372,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 Description = "Sample order placing strategy.";
                 Name = "OrderPlacingStrategy";
                 Calculate = Calculate.OnEachTick;
-                Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+                Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
                 account.OrderUpdate += OnOrderUpdate;
             }
             if (State == State.Configure)
@@ -378,14 +393,16 @@ namespace AlgoESAddonWindow.OrderStrategy
         private bool isWorkingState(Order order)
         {
             return order.OrderState == OrderState.Accepted
-                    || order.OrderState == OrderState.Working;
+                    || order.OrderState == OrderState.Working
+                    || order.OrderState == OrderState.ChangePending
+                    || order.OrderState == OrderState.Filled;
         }
 
 
         public void CancelOrderByOrderID(string OrderId)
         {
-            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
-            //Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
+            //Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
 
             CancelOrder(account, OrderId);
 
@@ -393,47 +410,42 @@ namespace AlgoESAddonWindow.OrderStrategy
 
         public void CloseAllOrder()
         {
-            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
-            List<Order> workingOrders = account.Orders
-                .Where(o => isWorkingState(o))
-                .ToList();
+            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");         
+            
 
-            if (workingOrders.Count == 0)
+            if (account.Positions == null || account.Positions.Count == 0)
             {
-                Print("No working orders to cancel.");
+                Print("No open positions.");
                 return;
             }
 
-            // Cancel all working orders
-            foreach (var order in workingOrders)
+            //// Close all open positions by submitting opposite market orders
+            foreach (Position position in account.Positions)
             {
                 try
                 {
-                    account.Cancel((IEnumerable<Order>)order);
-                    Print($"Cancelled order: {order.OrderId}");
+
+                    if (position.MarketPosition == MarketPosition.Long)
+                    {
+                        Print("ExitLong");
+                        ExitLong(position.Quantity);
+                    }
+                    else
+                    {
+                        Print("ExitShort");
+                        ExitShort(position.Quantity);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Print($"Error cancelling order {order.OrderId}: {ex.Message}");
+                    Print($"Error closing position for {position.Instrument.FullName}: {ex.Message}");
                 }
             }
-
-            // Close all open positions by submitting opposite market orders
-            foreach (var position in account.Positions)
-            {
-                if (position.Quantity != 0)
-                {
-                    if (position.Quantity > 0)
-                        ExitLong(position.Instrument.FullName);
-                    else
-                        ExitShort(position.Instrument.FullName);
-                }
-            }            
         }
 
         /* public void CanceltLimitOrderESU()
          {
-             Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+             Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
 
              if (account != null && SharedDataESU.orderID != "")
              {
@@ -449,7 +461,7 @@ namespace AlgoESAddonWindow.OrderStrategy
 
          public void CanceltLimitOrderESZ()
          {
-             Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+             Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
 
              if (account != null && SharedDataESZ.orderID != "")
              {

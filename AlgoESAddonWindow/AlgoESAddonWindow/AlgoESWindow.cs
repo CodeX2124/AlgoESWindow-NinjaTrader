@@ -26,7 +26,7 @@ namespace AlgoESAddonWindow
         private OrderPlacingStrategy orderStrategy;
         private string _OrderFilledInfo = "";
         private string orderIDESU, orderIDESZ;
-        private double cashValue;
+        private double currentValue;
         private Account acc;
         private double cutLossValue;
         private bool cutLossActive = false;
@@ -39,11 +39,42 @@ namespace AlgoESAddonWindow
                 Name = "AddOnWindow";
             }
 
-            if (State == State.DataLoaded)
+            else if (State == State.DataLoaded)
             {
-                acc = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+                acc = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
+
+                if (acc != null)
+                {                    
+                    acc.AccountItemUpdate += OnAccountItemUpdate;
+                }
+            }
+            else if (State == State.Terminated)
+            {
+                if (acc != null)
+                    acc.AccountItemUpdate -= OnAccountItemUpdate;
             }
 
+        }
+
+        private void OnAccountItemUpdate(object sender, AccountItemEventArgs e)
+        {
+       
+            if (e.AccountItem == AccountItem.CashValue)
+            {
+                double newCashValue = e.Value;
+                // Update UI label safely
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    algoWindow.txtCurrentAccountValue.Text = $"{newCashValue}";
+                });
+
+                cutLossValue = double.Parse(algoWindow.txtCutLossValue.Text);
+                if (cutLossActive && newCashValue <= cutLossValue)
+                {
+                    Print($"Cut loss triggered! Account value ${newCashValue} <= ${cutLossValue}");
+                    orderStrategy.CloseAllOrder();
+                }
+            }
         }
 
         // Will be called as a new NTWindow is created. It will be called in the thread of that window
@@ -72,7 +103,7 @@ namespace AlgoESAddonWindow
             existingMenuItemInControlCenter.Items.Add(addonWindowMenuItem);
 
             // Subscribe to the event for when the user presses our AddOn's menu item
-            addonWindowMenuItem.Click += OnMenuItemClick;
+            addonWindowMenuItem.Click += OnMenuItemClick;            
 
         }
 
@@ -114,32 +145,33 @@ namespace AlgoESAddonWindow
         }
         private void OnMarketData(object sender, MarketDataEventArgs e)
         {
-            if (acc == null)
-                return;
+            //if (acc == null)
+            //    return;
 
-            // Get current account cash value
-            double currentValue = acc.Get(AccountItem.CashValue, Currency.UsDollar);
+            //PrintTo = PrintTo.OutputTab1;
+            //currentValue = acc.Get(AccountItem.CashValue, Currency.UsDollar);
 
-            // Update UI label safely
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                algoWindow.txtCurrentAccountValue.Text = $"{currentValue}";
-            });
+            //// Update UI label safely
+            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            //{
+            //    algoWindow.txtCurrentAccountValue.Text = $"{currentValue}";
+            //});
+                        
 
-            // If cut loss is active, check condition
-            if (cutLossActive && currentValue <= cutLossValue)
-            {
-                Print($"Cut loss triggered! Account value ${currentValue} <= ${cutLossValue}");
+            //// If cut loss is active, check condition
+            //if (cutLossActive && currentValue <= cutLossValue)
+            //{
+            //    Print($"Cut loss triggered! Account value ${currentValue} <= ${cutLossValue}");
 
-                orderStrategy.CloseAllOrder();
+            //    orderStrategy.CloseAllOrder();
 
-                // Disable cut loss after triggering
-                cutLossActive = false;
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    algoWindow.btnCutLoss.Text = "No Cut Loss";
-                });
-            }
+            //    // Disable cut loss after triggering
+            //    cutLossActive = false;
+            //    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        algoWindow.btnCutLoss.Text = "No Cut Loss";
+            //    });
+            //}
 
             //orderStrategy = new OrderPlacingStrategy();
             //if (tickState == true)
@@ -218,6 +250,14 @@ namespace AlgoESAddonWindow
                     instrumentESU.MarketDataUpdate += OnMarketData;
                     instrumentESZ.MarketDataUpdate += OnMarketData;
 
+                    acc = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
+                    if (acc != null)
+                    {
+                        currentValue = acc.Get(AccountItem.CashValue, Currency.UsDollar);
+                        //SharedValue.CurrentValue = currentValue;
+                        // Update UI label safely
+                        algoWindow.txtCurrentAccountValue.Text = $"{currentValue}";
+                    }
                 }
 
                 else
@@ -229,7 +269,7 @@ namespace AlgoESAddonWindow
             });
 
 
-        }
+        }        
 
         private void BtnCutLossClick(object sender, EventArgs e)
         {
@@ -242,7 +282,19 @@ namespace AlgoESAddonWindow
                     cutLossValue = parsedValue;
                     cutLossActive = true;
                     algoWindow.btnCutLoss.Text = "Set Cut Loss";
-                    Print($"Cut loss set at {cutLossValue}");
+                    Print($"Cut loss set at {cutLossValue}, {cutLossActive}");       
+                    acc = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
+                    if (acc != null)
+                    {                        
+                        if (cutLossActive && currentValue <= cutLossValue)
+                        {
+                            Print($"Cut loss triggered! Account value ${currentValue} <= ${cutLossValue}");
+                            orderStrategy.CloseAllOrder();
+                        } else
+                        {
+                            acc.AccountItemUpdate += OnAccountItemUpdate;
+                        }
+                    }
                 }
                 else
                 {

@@ -77,7 +77,13 @@
             this.btnLoadPositionFile = new System.Windows.Forms.Button();
             this.btnSavePositionFile = new System.Windows.Forms.Button();
             this.panelLongTrade = new System.Windows.Forms.Panel();
+            this.btnCutLoss = new System.Windows.Forms.Button();
+            this.txtCutLossValue = new System.Windows.Forms.TextBox();
+            this.labCutLossValue = new System.Windows.Forms.Label();
+            this.txtCurrentAccountValue = new System.Windows.Forms.TextBox();
+            this.labCurrentAccountValue = new System.Windows.Forms.Label();
             this.buttonCancelESU24Order = new System.Windows.Forms.Button();
+            this.btnExecutionUpdateESU = new System.Windows.Forms.Button();
             this.textESU24OrderID = new System.Windows.Forms.TextBox();
             this.labelESU24OrderID = new System.Windows.Forms.Label();
             this.textESU24PlaceOrder = new System.Windows.Forms.TextBox();
@@ -92,6 +98,7 @@
             this.labelESU24Tick = new System.Windows.Forms.Label();
             this.panelShortTrade = new System.Windows.Forms.Panel();
             this.buttonCancelESZ24Order = new System.Windows.Forms.Button();
+            this.btnExecutionUpdateESZ = new System.Windows.Forms.Button();
             this.textESZ24OrderID = new System.Windows.Forms.TextBox();
             this.labelESZ24OrderID = new System.Windows.Forms.Label();
             this.textESZ24PlaceOrder = new System.Windows.Forms.TextBox();
@@ -104,8 +111,6 @@
             this.labelESZ24LimitPrice = new System.Windows.Forms.Label();
             this.textESZ24Tick = new System.Windows.Forms.TextBox();
             this.labelESZ24Tick = new System.Windows.Forms.Label();
-            this.btnExecutionUpdateESU = new System.Windows.Forms.Button();
-            this.btnExecutionUpdateESZ = new System.Windows.Forms.Button();
             this.paneTradeControl.SuspendLayout();
             this.grpPNL.SuspendLayout();
             this.grpPositions.SuspendLayout();
@@ -617,6 +622,11 @@
             this.panelLongTrade.AutoScroll = true;
             this.panelLongTrade.AutoSize = true;
             this.panelLongTrade.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.panelLongTrade.Controls.Add(this.btnCutLoss);
+            this.panelLongTrade.Controls.Add(this.txtCutLossValue);
+            this.panelLongTrade.Controls.Add(this.labCutLossValue);
+            this.panelLongTrade.Controls.Add(this.txtCurrentAccountValue);
+            this.panelLongTrade.Controls.Add(this.labCurrentAccountValue);
             this.panelLongTrade.Controls.Add(this.buttonCancelESU24Order);
             this.panelLongTrade.Controls.Add(this.btnExecutionUpdateESU);
             this.panelLongTrade.Controls.Add(this.textESU24OrderID);
@@ -635,6 +645,51 @@
             this.panelLongTrade.Name = "panelLongTrade";
             this.panelLongTrade.Size = new System.Drawing.Size(380, 505);
             this.panelLongTrade.TabIndex = 2;
+            // 
+            // btnCutLoss
+            // 
+            this.btnCutLoss.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.btnCutLoss.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCutLoss.ForeColor = System.Drawing.Color.White;
+            this.btnCutLoss.Location = new System.Drawing.Point(105, 385);
+            this.btnCutLoss.Name = "btnCutLoss";
+            this.btnCutLoss.Size = new System.Drawing.Size(123, 29);
+            this.btnCutLoss.TabIndex = 32;
+            this.btnCutLoss.Text = "Cut Loss";
+            this.btnCutLoss.UseVisualStyleBackColor = false;
+            this.btnCutLoss.Click += new System.EventHandler(this.btnCutLoss_Click);
+            // 
+            // txtCutLossValue
+            // 
+            this.txtCutLossValue.Location = new System.Drawing.Point(148, 349);
+            this.txtCutLossValue.Name = "txtCutLossValue";
+            this.txtCutLossValue.Size = new System.Drawing.Size(203, 20);
+            this.txtCutLossValue.TabIndex = 31;
+            // 
+            // labCutLossValue
+            // 
+            this.labCutLossValue.AutoSize = true;
+            this.labCutLossValue.Location = new System.Drawing.Point(66, 352);
+            this.labCutLossValue.Name = "labCutLossValue";
+            this.labCutLossValue.Size = new System.Drawing.Size(78, 13);
+            this.labCutLossValue.TabIndex = 30;
+            this.labCutLossValue.Text = "Cut Loss Value";
+            // 
+            // txtCurrentAccountValue
+            // 
+            this.txtCurrentAccountValue.Location = new System.Drawing.Point(148, 319);
+            this.txtCurrentAccountValue.Name = "txtCurrentAccountValue";
+            this.txtCurrentAccountValue.Size = new System.Drawing.Size(203, 20);
+            this.txtCurrentAccountValue.TabIndex = 29;
+            // 
+            // labCurrentAccountValue
+            // 
+            this.labCurrentAccountValue.AutoSize = true;
+            this.labCurrentAccountValue.Location = new System.Drawing.Point(32, 322);
+            this.labCurrentAccountValue.Name = "labCurrentAccountValue";
+            this.labCurrentAccountValue.Size = new System.Drawing.Size(114, 13);
+            this.labCurrentAccountValue.TabIndex = 28;
+            this.labCurrentAccountValue.Text = "Current Account Value";
             // 
             // buttonCancelESU24Order
             // 
@@ -660,7 +715,6 @@
             this.btnExecutionUpdateESU.Text = "Execution Update";
             this.btnExecutionUpdateESU.UseVisualStyleBackColor = false;
             // 
-            
             // textESU24OrderID
             // 
             this.textESU24OrderID.Location = new System.Drawing.Point(103, 228);
@@ -755,7 +809,6 @@
             this.textESU24Tick.Name = "textESU24Tick";
             this.textESU24Tick.Size = new System.Drawing.Size(203, 20);
             this.textESU24Tick.TabIndex = 1;
-            this.textESU24Tick.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // labelESU24Tick
             // 
@@ -814,7 +867,6 @@
             this.btnExecutionUpdateESZ.Text = "Execution Update";
             this.btnExecutionUpdateESZ.UseVisualStyleBackColor = false;
             // 
-            
             // textESZ24OrderID
             // 
             this.textESZ24OrderID.Location = new System.Drawing.Point(110, 231);
@@ -1036,5 +1088,10 @@
         public System.Windows.Forms.Label labelESZ24Tick;
         public System.Windows.Forms.Button btnExecutionUpdateESU;
         public System.Windows.Forms.Button btnExecutionUpdateESZ;
+        public TextBox txtCurrentAccountValue;
+        public Label labCurrentAccountValue;
+        public Button btnCutLoss;
+        public TextBox txtCutLossValue;
+        public Label labCutLossValue;
     }
 }

@@ -1,12 +1,13 @@
-﻿using System.Windows;
-using NinjaTrader.Gui.Tools;
-using AlgoESAddonWindow.AlgoES;
+﻿using AlgoESAddonWindow.AlgoES;
 using AlgoESAddonWindow.OrderStrategy;
 using AlgoESAddonWindow.SharedData;
-using NinjaTrader.Data;
-using NinjaTrader.NinjaScript;
 using NinjaTrader.Cbi;
+using NinjaTrader.Data;
 using NinjaTrader.Gui;
+using NinjaTrader.Gui.Tools;
+using NinjaTrader.NinjaScript;
+using System.Windows;
+using System.Windows.Threading;
 using System.Xml.Linq;
 
 namespace AlgoESAddonWindow
@@ -25,6 +26,10 @@ namespace AlgoESAddonWindow
         private OrderPlacingStrategy orderStrategy;
         private string _OrderFilledInfo = "";
         private string orderIDESU, orderIDESZ;
+        private double cashValue;
+        private Account acc;
+        private double cutLossValue;
+        private bool cutLossActive = false;
         protected override void OnStateChange()
         {
 
@@ -32,6 +37,11 @@ namespace AlgoESAddonWindow
             {
                 Description = "Example AddOnWindow of NinjaTrader 8";
                 Name = "AddOnWindow";
+            }
+
+            if (State == State.DataLoaded)
+            {
+                acc = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
             }
 
         }
@@ -98,76 +108,103 @@ namespace AlgoESAddonWindow
                 algoWindow.buttonCancelESZ24Order.Click += CancelOrderESZ;
                 algoWindow.btnExecutionUpdateESU.Click += BtnExecutionUpdateESU;
                 algoWindow.btnExecutionUpdateESZ.Click += BtnExecutionUpdateESZ;
+                algoWindow.btnCutLoss.Click += BtnCutLossClick;
                 algoWindow.Show();
             }));
         }
-
         private void OnMarketData(object sender, MarketDataEventArgs e)
         {
-            orderStrategy = new OrderPlacingStrategy();
-            if (tickState == true)
+            if (acc == null)
+                return;
+
+            // Get current account cash value
+            double currentValue = acc.Get(AccountItem.CashValue, Currency.UsDollar);
+
+            // Update UI label safely
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
+                algoWindow.txtCurrentAccountValue.Text = $"{currentValue}";
+            });
 
-                if (e.Instrument.FullName == "ES SEP24")
+            // If cut loss is active, check condition
+            if (cutLossActive && currentValue <= cutLossValue)
+            {
+                Print($"Cut loss triggered! Account value ${currentValue} <= ${cutLossValue}");
+
+                orderStrategy.CloseAllOrder();
+
+                // Disable cut loss after triggering
+                cutLossActive = false;
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (e.MarketDataType == MarketDataType.Last)
-                    {
-                        currentPriceESU = e.Price;
-
-                        cntESU++;
-                        if (cntESU == 2)
-                        {
-                            firstPriceESU = currentPriceESU;
-                            Print($"First price of ES SEP24: {firstPriceESU}");
-                            algoWindow.UpdateESUPrice(firstPriceESU);
-                        }
-                        else
-                        {
-                            spreadESU = Math.Abs(currentPriceESU - firstPriceESU);
-                            if (spreadESU >= 0.25)
-                            {
-                                algoWindow.UpdateESUPrice(currentPriceESU);
-                                _OrderFilledInfo = orderStrategy.GetOrderFilledInfo();
-                                //algoWindow.UpdateESUOrderID(_OrderFilledInfo);
-                                // Print($"Current price of ES SEP24: {currentPriceESU}");
-                                firstPriceESU = currentPriceESU;
-                                spreadESU = 0;                                
-                            }
-                        }
-
-                    }
-                }
-
-                if (e.Instrument.FullName == "ES DEC24")
-                {
-
-                    if (e.MarketDataType == MarketDataType.Last)
-                    {
-                        currentPriceESZ = e.Price;
-
-                        cntESZ++;
-                        if (cntESZ == 2)
-                        {
-                            firstPriceESZ = currentPriceESZ;
-                            Print($"First price of ES DEC24: {firstPriceESZ}");
-                            algoWindow.UpdateESZPrice(firstPriceESZ);
-                        }
-                        else
-                        {
-                            spreadESZ = Math.Abs(currentPriceESZ - firstPriceESZ);
-                            if (spreadESZ >= 0.25)
-                            {
-                                algoWindow.UpdateESZPrice(currentPriceESZ);
-                                //algoWindow.UpdateESZOrderID(_OrderFilledInfo);
-                                //  Print($"Current price of ES DEC24: {currentPriceESZ}");
-                                firstPriceESZ = currentPriceESZ;
-                                spreadESZ = 0;
-                            }
-                        }
-
-                    }
-                }
+                    algoWindow.btnCutLoss.Text = "No Cut Loss";
+                });
             }
+
+            //orderStrategy = new OrderPlacingStrategy();
+            //if (tickState == true)
+            //{
+
+            //    if (e.Instrument.FullName == "ES SEP24")
+            //    {
+            //        if (e.MarketDataType == MarketDataType.Last)
+            //        {
+            //            currentPriceESU = e.Price;
+
+            //            cntESU++;
+            //            if (cntESU == 2)
+            //            {
+            //                firstPriceESU = currentPriceESU;
+            //                Print($"First price of ES SEP24: {firstPriceESU}");
+            //                algoWindow.UpdateESUPrice(firstPriceESU);
+            //            }
+            //            else
+            //            {
+            //                spreadESU = Math.Abs(currentPriceESU - firstPriceESU);
+            //                if (spreadESU >= 0.25)
+            //                {
+            //                    algoWindow.UpdateESUPrice(currentPriceESU);
+            //                    _OrderFilledInfo = orderStrategy.GetOrderFilledInfo();
+            //                    //algoWindow.UpdateESUOrderID(_OrderFilledInfo);
+            //                    // Print($"Current price of ES SEP24: {currentPriceESU}");
+            //                    firstPriceESU = currentPriceESU;
+            //                    spreadESU = 0;                                
+            //                }
+            //            }
+
+            //        }
+            //    }
+
+            //    if (e.Instrument.FullName == "ES DEC24")
+            //    {
+
+            //        if (e.MarketDataType == MarketDataType.Last)
+            //        {
+            //            currentPriceESZ = e.Price;
+
+            //            cntESZ++;
+            //            if (cntESZ == 2)
+            //            {
+            //                firstPriceESZ = currentPriceESZ;
+            //                Print($"First price of ES DEC24: {firstPriceESZ}");
+            //                algoWindow.UpdateESZPrice(firstPriceESZ);
+            //            }
+            //            else
+            //            {
+            //                spreadESZ = Math.Abs(currentPriceESZ - firstPriceESZ);
+            //                if (spreadESZ >= 0.25)
+            //                {
+            //                    algoWindow.UpdateESZPrice(currentPriceESZ);
+            //                    //algoWindow.UpdateESZOrderID(_OrderFilledInfo);
+            //                    //  Print($"Current price of ES DEC24: {currentPriceESZ}");
+            //                    firstPriceESZ = currentPriceESZ;
+            //                    spreadESZ = 0;
+            //                }
+            //            }
+
+            //        }
+            //    }
+            //}
 
         }
 
@@ -192,6 +229,32 @@ namespace AlgoESAddonWindow
             });
 
 
+        }
+
+        private void BtnCutLossClick(object sender, EventArgs e)
+        {
+
+            if (!cutLossActive)
+            {
+                // Try parse cut loss value from input
+                if (double.TryParse(algoWindow.txtCutLossValue.Text, out double parsedValue) && parsedValue > 0)
+                {
+                    cutLossValue = parsedValue;
+                    cutLossActive = true;
+                    algoWindow.btnCutLoss.Text = "Set Cut Loss";
+                    Print($"Cut loss set at {cutLossValue}");
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Please enter a valid positive number for cut loss value.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            else
+            {
+                cutLossActive = false;
+                algoWindow.btnCutLoss.Text = "No Cut Loss";
+                Print("Cut loss disabled.");
+            }
         }
 
         private void PrepareOrderBuyESU(object sender, EventArgs e)
@@ -240,10 +303,10 @@ namespace AlgoESAddonWindow
                     algoWindow.textESZ24LimitPrice.Text = "";
                     algoWindow.textESZ24NumContracts.Text = "";
                 }
-                else
-                {
-                    System.Windows.MessageBox.Show("Invalid input for ESZ24 order.");
-                }
+                //else
+                //{
+                //    System.Windows.MessageBox.Show("Invalid input for ESZ24 order.");
+                //}
             }
 
         }
@@ -266,10 +329,10 @@ namespace AlgoESAddonWindow
                     algoWindow.textESU24LimitPrice.Text = "";
                     algoWindow.textESU24NumContracts.Text = "";
                 }
-                else
-                {
-                    System.Windows.MessageBox.Show("Invalid input for ESU24 order.");
-                }
+                //else
+                //{
+                //    System.Windows.MessageBox.Show("Invalid input for ESU24 order.");
+                //}
             }
 
         }

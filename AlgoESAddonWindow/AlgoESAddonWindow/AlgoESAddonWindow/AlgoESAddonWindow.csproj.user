@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<StartAction>Program</StartAction>
-		<StartProgram>C:\Program Files %28x86%29\NinjaTrader 8\bin64\NinjaTrader.exe</StartProgram>
+		<StartProgram>C:\Program Files\NinjaTrader 8\bin\NinjaTrader.exe</StartProgram>
 	</PropertyGroup>
 	<ItemGroup>
 	<Compile Update="Form1.cs">

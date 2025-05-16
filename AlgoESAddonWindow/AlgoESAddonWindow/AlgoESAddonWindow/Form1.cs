@@ -17,6 +17,7 @@ namespace AlgoESAddonWindow.AlgoES
     {
 
         private bool _boolStartTick = false;
+        private bool _boolCutLoss = false;
         private bool _boolStartTrading = false;
 
         public formAlgoES()
@@ -71,6 +72,23 @@ namespace AlgoESAddonWindow.AlgoES
                 btnStartTick.ForeColor = Color.White;
             }
             _boolStartTick = !_boolStartTick;
+
+        }
+
+        private void btnCutLoss_Click(object sender, EventArgs e)
+        {
+
+            if (_boolCutLoss == true)
+            {
+
+                btnCutLoss.Text = "Set Cut Loss";
+
+            }
+            else
+            {
+                btnCutLoss.Text = "No Cut Loss";
+            }
+            _boolCutLoss = !_boolCutLoss;
 
         }
 

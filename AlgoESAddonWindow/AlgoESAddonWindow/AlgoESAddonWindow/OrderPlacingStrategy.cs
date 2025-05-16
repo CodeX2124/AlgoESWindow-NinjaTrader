@@ -23,13 +23,13 @@ namespace AlgoESAddonWindow.OrderStrategy
         public int[] quantities = new int[100];
         private Order[] OrdersESU = new Order[100];
         private Order[] OrdersESZ = new Order[100];
-        private Order realOrderESU;
-        private Order realOrderESZ;
+        private Order? realOrderESU;
+        private Order? realOrderESZ;
         private double limitPriceESU, limitPriceESZ, currentPriceESU, currentPriceESZ;
         private int contractCountESU = 0, contractCountESZ = 0, cnt = 0, cntESU = 0, cntESZ = 0, cntFilled = 0;
-        public string typeESU = "", typeESZ = "", currentOrderId;
-        private formAlgoES algoForm;
-        private Instrument instrumentESU, instrumentESZ;
+        public string? typeESU = "", typeESZ = "", currentOrderId;
+        private formAlgoES? algoForm;
+        private Instrument? instrumentESU, instrumentESZ;
         private string _strOrderFilledInfo = "", orderState = "None";
         private void OnMarketData(object sender, MarketDataEventArgs e)
         {
@@ -43,7 +43,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                     {
                         if (Math.Abs(currentPriceESU - SharedDataState.limitPrices[i]) >= 2)
                         {
-                            Account acc = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218");
+                            Account acc = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
                             CancelOrder(acc, SharedDataState.orderIDs[i]);
                             // Print($"{i} ====> {currentOrders[i].OrderId} cancelled due to high/low spread");
                         }
@@ -61,7 +61,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                     {
                         if (Math.Abs(currentPriceESZ - SharedDataState.limitPrices[i]) >= 2)
                         {
-                            Account acc = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218");
+                            Account acc = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
                             CancelOrder(acc, SharedDataState.orderIDs[i]);
                             // Print($"{i} ====> {currentOrders[i].OrderId} cancelled due to high/low spread");
                         }
@@ -175,7 +175,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 try
                 {
                     // Gather required parameters for SendOrder function
-                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218"); // Get the first available account (modify as per your requirement)
+                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091"); // Get the first available account (modify as per your requirement)
 
                     if (account == null)
                     {
@@ -220,7 +220,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 try
                 {
                     // Gather required parameters for SendOrder function
-                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218"); // Get the first available account (modify as per your requirement)
+                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091"); // Get the first available account (modify as per your requirement)
 
                     if (account == null)
                     {
@@ -274,7 +274,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 try
                 {
                     // Gather required parameters for SendOrder function
-                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218"); // Get the first available account (modify as per your requirement)
+                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091"); // Get the first available account (modify as per your requirement)
 
                     if (account == null)
                     {
@@ -314,7 +314,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 try
                 {
                     // Gather required parameters for SendOrder function
-                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218"); // Get the first available account (modify as per your requirement)
+                    Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091"); // Get the first available account (modify as per your requirement)
 
                     if (account == null)
                     {
@@ -357,7 +357,7 @@ namespace AlgoESAddonWindow.OrderStrategy
                 Description = "Sample order placing strategy.";
                 Name = "OrderPlacingStrategy";
                 Calculate = Calculate.OnEachTick;
-                Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218");
+                Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
                 account.OrderUpdate += OnOrderUpdate;
             }
             if (State == State.Configure)
@@ -377,22 +377,63 @@ namespace AlgoESAddonWindow.OrderStrategy
         
         private bool isWorkingState(Order order)
         {
-            return order.OrderState == OrderState.Working;
+            return order.OrderState == OrderState.Accepted
+                    || order.OrderState == OrderState.Working;
         }
 
 
         public void CancelOrderByOrderID(string OrderId)
         {
-            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218");
-            //Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218");
+            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+            //Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
 
             CancelOrder(account, OrderId);
 
         }
 
+        public void CloseAllOrder()
+        {
+            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
+            List<Order> workingOrders = account.Orders
+                .Where(o => isWorkingState(o))
+                .ToList();
+
+            if (workingOrders.Count == 0)
+            {
+                Print("No working orders to cancel.");
+                return;
+            }
+
+            // Cancel all working orders
+            foreach (var order in workingOrders)
+            {
+                try
+                {
+                    account.Cancel((IEnumerable<Order>)order);
+                    Print($"Cancelled order: {order.OrderId}");
+                }
+                catch (Exception ex)
+                {
+                    Print($"Error cancelling order {order.OrderId}: {ex.Message}");
+                }
+            }
+
+            // Close all open positions by submitting opposite market orders
+            foreach (var position in account.Positions)
+            {
+                if (position.Quantity != 0)
+                {
+                    if (position.Quantity > 0)
+                        ExitLong(position.Instrument.FullName);
+                    else
+                        ExitShort(position.Instrument.FullName);
+                }
+            }            
+        }
+
         /* public void CanceltLimitOrderESU()
          {
-             Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218");
+             Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
 
              if (account != null && SharedDataESU.orderID != "")
              {
@@ -408,7 +449,7 @@ namespace AlgoESAddonWindow.OrderStrategy
 
          public void CanceltLimitOrderESZ()
          {
-             Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO2877218");
+             Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO3279091");
 
              if (account != null && SharedDataESZ.orderID != "")
              {

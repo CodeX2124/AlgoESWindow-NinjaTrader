@@ -410,8 +410,13 @@ namespace AlgoESAddonWindow.OrderStrategy
 
         public void CloseAllOrder()
         {
-            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");         
-            
+            Account account = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
+
+            if (account == null)
+            {
+                Print("Account not found.");
+                return;
+            }
 
             if (account.Positions == null || account.Positions.Count == 0)
             {
@@ -419,21 +424,26 @@ namespace AlgoESAddonWindow.OrderStrategy
                 return;
             }
 
-            //// Close all open positions by submitting opposite market orders
             foreach (Position position in account.Positions)
             {
                 try
                 {
+                    Instrument instrument = position.Instrument;
+                    int quantity = position.Quantity;
 
                     if (position.MarketPosition == MarketPosition.Long)
                     {
-                        Print("ExitLong");
-                        ExitLong(position.Quantity);
+                        Print($"Closing LONG: {quantity} of {instrument.FullName}");
+                        Order exitLong = null;
+                        exitLong = account.CreateOrder(instrument, OrderAction.Sell, OrderType.Market, TimeInForce.Day, quantity, 0, 0, "", "CloseLong", null);
+                        account.Submit(new[] { exitLong });
                     }
-                    else
+                    else if (position.MarketPosition == MarketPosition.Short)
                     {
-                        Print("ExitShort");
-                        ExitShort(position.Quantity);
+                        Print($"Closing SHORT: {quantity} of {instrument.FullName}");
+                        Order exitShort = null;
+                        exitShort = account.CreateOrder(instrument, OrderAction.BuyToCover, OrderType.Market, TimeInForce.Day, quantity, 0, 0, "", "CloseShort", null);
+                        account.Submit(new[] { exitShort });
                     }
                 }
                 catch (Exception ex)

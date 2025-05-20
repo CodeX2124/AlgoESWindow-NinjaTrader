@@ -36,16 +36,19 @@ namespace AlgoESAddonWindow
             if (State == State.SetDefaults)
             {
                 Description = "Example AddOnWindow of NinjaTrader 8";
-                Name = "AddOnWindow";
+                Name = "AddOnWindow";                
             }
 
             else if (State == State.DataLoaded)
             {
+                algoWindow = new formAlgoES();
+                algoWindow.Show();
                 acc = Account.All.FirstOrDefault(a => a.Name == "DEMO4765133");
 
                 if (acc != null)
                 {                    
                     acc.AccountItemUpdate += OnAccountItemUpdate;
+                    Print("Subscribed to AccountItemUpdate in Realtime.");
                 }
             }
             else if (State == State.Terminated)
@@ -58,22 +61,41 @@ namespace AlgoESAddonWindow
 
         private void OnAccountItemUpdate(object sender, AccountItemEventArgs e)
         {
-       
+            Print("OK");
             if (e.AccountItem == AccountItem.CashValue)
+
             {
                 double newCashValue = e.Value;
-                // Update UI label safely
+
                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
-                    algoWindow.txtCurrentAccountValue.Text = $"{newCashValue}";
-                });
+                    try
+                    {
+                        if (algoWindow?.txtCurrentAccountValue != null)
+                        {
+                            algoWindow.txtCurrentAccountValue.Text = e.Value.ToString("N2");
 
-                cutLossValue = double.Parse(algoWindow.txtCutLossValue.Text);
-                if (cutLossActive && newCashValue <= cutLossValue)
-                {
-                    Print($"Cut loss triggered! Account value ${newCashValue} <= ${cutLossValue}");
-                    orderStrategy.CloseAllOrder();
-                }
+                            //if (double.TryParse(algoWindow.txtCutLossValue?.Text, out double parsedCutLossValue))
+                            //{
+                            //    cutLossValue = parsedCutLossValue;
+
+                            //    if (cutLossActive && e.Value <= cutLossValue)
+                            //    {
+                            //        Print($"Cut loss triggered: ${e.Value} <= ${cutLossValue}");
+                            //        orderStrategy?.CloseAllOrder();
+                            //    }
+                            //}
+                        }
+                        else
+                        {
+                            Print("UI element is null.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Print("UI update error: " + ex.Message);
+                    }
+                });
             }
         }
 
@@ -256,7 +278,8 @@ namespace AlgoESAddonWindow
                         currentValue = acc.Get(AccountItem.CashValue, Currency.UsDollar);
                         //SharedValue.CurrentValue = currentValue;
                         // Update UI label safely
-                        algoWindow.txtCurrentAccountValue.Text = $"{currentValue}";
+                        algoWindow.txtCurrentAccountValue.Text = currentValue.ToString("N2");
+                        acc.AccountItemUpdate += OnAccountItemUpdate;
                     }
                 }
 
@@ -265,6 +288,7 @@ namespace AlgoESAddonWindow
                     tickState = false;
                     instrumentESU.MarketDataUpdate -= OnMarketData;
                     instrumentESZ.MarketDataUpdate -= OnMarketData;
+                    acc.AccountItemUpdate -= OnAccountItemUpdate;
                 }
             });
 
